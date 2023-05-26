@@ -268,14 +268,18 @@ public class ContactosCovid {
 			posicionPersona.setCoordenada(new Coordenada(latitud.get(), longitud.get()));
 		});
 
+		setPosicionPersona(data, setters);
+
+		return posicionPersona;
+	}
+
+	private static void setPosicionPersona(String[] data, HashMap<Integer, Consumer<String>> setters) {
 		for (int i = 1; i < Constantes.MAX_DATOS_LOCALIZACION; i++) {
 			String s = data[i];
 			setters.get(i).accept(s);
 		}
-
-		return posicionPersona;
 	}
-	
+
 	private FechaHora parsearFecha (String fecha) {
 		int dia, mes, anio;
 		String[] valores = fecha.split("\\/");
