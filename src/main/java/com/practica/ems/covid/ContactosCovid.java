@@ -5,8 +5,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.practica.excecption.EmsDuplicateLocationException;
 import com.practica.excecption.EmsDuplicatePersonException;
@@ -226,32 +228,22 @@ public class ContactosCovid {
 
 	private Persona crearPersona(String[] data) {
 		Persona persona = new Persona();
+		HashMap<Integer, Consumer<String>> setters = new HashMap<>();
+
+		setters.put(1, persona::setDocumento);
+		setters.put(2, persona::setNombre);
+		setters.put(3, persona::setApellidos);
+		setters.put(4, persona::setEmail);
+		setters.put(5, persona::setDireccion);
+		setters.put(6, persona::setCp);
+		setters.put(7, s -> persona.setFechaNacimiento(parsearFecha(s)));
+
 		for (int i = 1; i < Constantes.MAX_DATOS_PERSONA; i++) {
 			String s = data[i];
-			switch (i) {
-			case 1:
-				persona.setDocumento(s);
-				break;
-			case 2:
-				persona.setNombre(s);
-				break;
-			case 3:
-				persona.setApellidos(s);
-				break;
-			case 4:
-				persona.setEmail(s);
-				break;
-			case 5:
-				persona.setDireccion(s);
-				break;
-			case 6:
-				persona.setCp(s);
-				break;
-			case 7:
-				persona.setFechaNacimiento(parsearFecha(s));
-				break;
-			}
+
+			setters.get(i).accept(s);
 		}
+
 		return persona;
 	}
 
