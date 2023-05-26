@@ -253,8 +253,6 @@ public class ContactosCovid {
 		AtomicReference<String> fecha = null;
 		AtomicReference<Float> latitud = new AtomicReference<>((float) 0);
 		AtomicReference<Float> longitud = new AtomicReference<>((float) 0);
-
-		String hora;
 		HashMap<Integer, Consumer<String>> setters = new HashMap<>();
 
 		setters.put(1, s -> posicionPersona.setDocumento(s));
