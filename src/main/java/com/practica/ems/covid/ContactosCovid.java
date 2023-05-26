@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import com.practica.excecption.EmsDuplicateLocationException;
@@ -249,30 +250,31 @@ public class ContactosCovid {
 
 	private PosicionPersona crearPosicionPersona(String[] data) {
 		PosicionPersona posicionPersona = new PosicionPersona();
-		String fecha = null, hora;
-		float latitud = 0, longitud;
+		AtomicReference<String> fecha = null;
+		AtomicReference<Float> latitud = new AtomicReference<>((float) 0);
+		AtomicReference<Float> longitud = new AtomicReference<>((float) 0);
+
+		String hora;
+		HashMap<Integer, Consumer<String>> setters = new HashMap<>();
+
+		setters.put(1, s -> posicionPersona.setDocumento(s));
+		setters.put(2, s -> fecha.set(s));
+		setters.put(3, s -> {
+			posicionPersona.setFechaPosicion(parsearFecha(fecha.get(), s));
+		});
+		setters.put(4, s -> {
+			latitud.set(Float.parseFloat(s));
+		});
+		setters.put(5, s -> {
+			longitud.set(Float.parseFloat(s));
+			posicionPersona.setCoordenada(new Coordenada(latitud.get(), longitud.get()));
+		});
+
 		for (int i = 1; i < Constantes.MAX_DATOS_LOCALIZACION; i++) {
 			String s = data[i];
-			switch (i) {
-			case 1:
-				posicionPersona.setDocumento(s);
-				break;
-			case 2:
-				fecha = data[i];
-				break;
-			case 3:
-				hora = data[i];
-				posicionPersona.setFechaPosicion(parsearFecha(fecha, hora));
-				break;
-			case 4:
-				latitud = Float.parseFloat(s);
-				break;
-			case 5:
-				longitud = Float.parseFloat(s);
-				posicionPersona.setCoordenada(new Coordenada(latitud, longitud));
-				break;
-			}
+			setters.get(i).accept(s);
 		}
+
 		return posicionPersona;
 	}
 	
