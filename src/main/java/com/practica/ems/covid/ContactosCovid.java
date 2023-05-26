@@ -273,7 +273,7 @@ public class ContactosCovid {
 		return posicionPersona;
 	}
 
-	private static void setPosicionPersona(String[] data, HashMap<Integer, Consumer<String>> setters) {
+	private void setPosicionPersona(String[] data, HashMap<Integer, Consumer<String>> setters) {
 		for (int i = 1; i < Constantes.MAX_DATOS_LOCALIZACION; i++) {
 			String s = data[i];
 			setters.get(i).accept(s);
