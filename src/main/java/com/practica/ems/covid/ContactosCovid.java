@@ -94,18 +94,17 @@ public class ContactosCovid {
 		FileReader fr = null;
 		BufferedReader br = null;
 		String datas[] = null, data = null;
-		loadDataFile(fichero, reset, archivo, fr, br, datas, data);
-		
+		loadDataFile(new Archivo(fichero, archivo, fr, br), reset, datas, data);
 	}
 
 	@SuppressWarnings("resource")
-	public void loadDataFile(String fichero, boolean reset, File archivo, FileReader fr, BufferedReader br, String datas[], String data ) {
+	public void loadDataFile(Archivo arc, boolean reset, String datas[], String data ) {
 		try {
 			// Apertura del fichero y creacion de BufferedReader para poder
 			// hacer una lectura comoda (disponer del metodo readLine()).
-			archivo = new File(fichero);
-			fr = new FileReader(archivo);
-			br = new BufferedReader(fr);
+			arc.setArchivo(new File(arc.getFichero()));
+			arc.setFr(new FileReader(arc.getArchivo()));
+			arc.setBr(new BufferedReader(arc.getBr()));
 			if (reset) {
 				this.poblacion = new Poblacion();
 				this.localizacion = new Localizacion();
@@ -116,7 +115,7 @@ public class ContactosCovid {
 			 * tiene el tipo PERSONA o LOCALIZACION y cargo la línea de datos en la 
 			 * lista correspondiente. Sino viene ninguno de esos tipos lanzo una excepción
 			 */
-			while ((data = br.readLine()) != null) {
+			while ((data = arc.getBr().readLine()) != null) {
 				datas = dividirEntrada(data.trim());
 				getDataLines(datas);
 			}
@@ -125,9 +124,9 @@ public class ContactosCovid {
 		} finally {
 
 			try {
-				if (fr == null) throw new Exception();
+				if (arc.getFr() == null) throw new Exception();
 
-				fr.close();
+				arc.getFr().close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
